@@ -1,6 +1,9 @@
 import 'package:bytebank/components/text_fields.dart';
+import 'package:bytebank/models/saldo.dart';
 import 'package:bytebank/models/transferencia.dart';
+import 'package:bytebank/transferencias.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 const _tituloAppBar = 'Criando Transferência';
 const _labelNumeroConta = 'Número da Conta';
@@ -9,14 +12,7 @@ const _labelValor = 'Valor';
 const _hintValor = '0.00';
 const _buttonConfirmationText = 'Confirmar';
 
-class FormularioTransferencia extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return FormularioTransfetenciaState();
-  }
-}
-
-class FormularioTransfetenciaState extends State<FormularioTransferencia> {
+class FormularioTransferencia extends StatelessWidget {
   final TextEditingController _controladorCampoNumeroConta =
       TextEditingController();
   final TextEditingController _controladorCampoValor = TextEditingController();
@@ -35,10 +31,11 @@ class FormularioTransfetenciaState extends State<FormularioTransferencia> {
                 label: _labelNumeroConta,
                 hint: _hintNumeroConta),
             TextFields(
-                controller: _controladorCampoValor,
-                label: _labelValor,
-                hint: _hintValor,
-                icon: Icons.monetization_on),
+              controller: _controladorCampoValor,
+              label: _labelValor,
+              hint: _hintValor,
+              icon: Icons.monetization_on,
+            ),
             RaisedButton(
               child: Text(_buttonConfirmationText),
               onPressed: () => _criaTransferencia(context),
@@ -52,10 +49,35 @@ class FormularioTransfetenciaState extends State<FormularioTransferencia> {
   void _criaTransferencia(BuildContext context) {
     final int numeroConta = int.tryParse(_controladorCampoNumeroConta.text);
     final double valor = double.tryParse(_controladorCampoValor.text);
+    final transferenciaValida =
+        _validaTransferencia(context, numeroConta, valor);
 
-    if (numeroConta != null && valor != null) {
-      final transferenciaCriada = Transferencia(valor, numeroConta);
-      Navigator.pop(context, transferenciaCriada);
+    if (transferenciaValida) {
+      final novaTransferencia = Transferencia(valor, numeroConta);
+
+      _atualizaEstado(context, novaTransferencia, valor);
+      Navigator.pop(context);
     }
+  }
+
+  _validaTransferencia(context, numeroConta, valor) {
+    final _camposPreenchidos = numeroConta != null && valor != null;
+    final _saldoSuficiente = valor <=
+        Provider.of<Saldo>(
+          context,
+          listen: false,
+        ).valor;
+    return _camposPreenchidos && _saldoSuficiente;
+  }
+
+  _atualizaEstado(context, novaTransferencia, valor) {
+    Provider.of<Transferencias>(
+      context,
+      listen: false,
+    ).adiciona(novaTransferencia);
+    Provider.of<Saldo>(
+      context,
+      listen: false,
+    ).subtrai(valor);
   }
 }
