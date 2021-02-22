@@ -8,11 +8,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+const _appTitle = 'Bytebank';
+const _depositText = 'Receber depósito';
+const _newTransferText = 'Nova transferência';
+
 class Dashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Bytebank'),
+          title: const Text(_appTitle),
         ),
         body: ListView(children: <Widget>[
           Padding(
@@ -27,7 +31,7 @@ class Dashboard extends StatelessWidget {
                   alignment: MainAxisAlignment.center,
                   children: <Widget>[
                     RaisedButton(
-                      child: Text('Receber depósito'),
+                      child: Text(_depositText),
                       color: Colors.green,
                       onPressed: () {
                         Navigator.push(
@@ -42,7 +46,7 @@ class Dashboard extends StatelessWidget {
                     ),
                     RaisedButton(
                       color: Colors.green,
-                      child: Text('Nova transferência'),
+                      child: Text(_newTransferText),
                       onPressed: () {
                         Navigator.push(context,
                             MaterialPageRoute(builder: (context) {

@@ -6,6 +6,9 @@ import 'package:provider/provider.dart';
 
 final _titulo = 'Últimas transferências';
 
+const _allTransfersText = 'Ver todas transferências';
+const _noTransferText = 'Você ainda não cadastrou nenhuma transferência.';
+
 class UltimasTransferencias extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
@@ -23,7 +26,7 @@ class UltimasTransferencias extends StatelessWidget {
           final _quantidade = transferencias.transferencias.length;
           int tamanho = 3;
 
-          if(_quantidade == 0){
+          if (_quantidade == 0) {
             return SemTransferenciaCadastrada();
           }
 
@@ -42,7 +45,7 @@ class UltimasTransferencias extends StatelessWidget {
         }),
         RaisedButton(
           color: Colors.green,
-          child: Text('Ver todas transferências'),
+          child: Text(_allTransfersText),
           onPressed: () {
             Navigator.push(context, MaterialPageRoute(builder: (context) {
               return ListaTransferencias();
@@ -61,7 +64,7 @@ class SemTransferenciaCadastrada extends StatelessWidget {
       child: Padding(
         padding: EdgeInsets.all(40),
         child: Text(
-          'Você ainda não cadastrou nenhuma transferência.',
+          _noTransferText,
           textAlign: TextAlign.center,
         ),
       ),
